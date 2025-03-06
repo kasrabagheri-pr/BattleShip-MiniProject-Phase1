@@ -88,7 +88,7 @@ public class BattleShip {
      * @param size The size of the ship.
      * @param symbol The symbol to represent the ship.
      */
-    //
+
     static void placeShip(char[][] grid, int size, char symbol) {
         Random random = new Random();
         boolean horizontal = random.nextBoolean();
