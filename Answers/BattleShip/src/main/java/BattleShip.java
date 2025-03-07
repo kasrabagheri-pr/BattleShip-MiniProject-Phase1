@@ -119,6 +119,7 @@ public class BattleShip {
             placeShip(grid, size, symbol);
         }
     }
+
     /**
      * Checks if a ship can be placed at the specified location on the grid.
      * This includes checking the size of the ship, its direction (horizontal or vertical),
