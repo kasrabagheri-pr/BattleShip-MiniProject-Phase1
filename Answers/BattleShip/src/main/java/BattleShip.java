@@ -56,7 +56,7 @@ public class BattleShip {
             }
             player1Turn = !player1Turn;
         }
-        
+
         System.out.println("Game Over!");
     }
     /**
@@ -78,8 +78,11 @@ public class BattleShip {
      * @param grid The grid where ships need to be placed.
      */
     static void placeShips(char[][] grid) {
-        // Place a single ship of size 5
-        placeShip(grid,5,'A');
+        // Place a single ship of anysize
+        placeShip(grid,1,'A');
+        placeShip(grid,2,'B');
+        placeShip(grid,3,'C');
+        placeShip(grid,4,'D');
     }
     /**
      * Places a ship of a given size on the grid.
@@ -116,7 +119,6 @@ public class BattleShip {
             placeShip(grid, size, symbol);
         }
     }
-
     /**
      * Checks if a ship can be placed at the specified location on the grid.
      * This includes checking the size of the ship, its direction (horizontal or vertical),
@@ -151,7 +153,6 @@ public class BattleShip {
         }
         return true;
     }
-
     /**
      * Manages a player's turn, allowing them to attack the opponent's grid
      * and updates their tracking grid with hits or misses.
@@ -162,16 +163,18 @@ public class BattleShip {
     static void playerTurn(char[][] opponentGrid, char[][] trackingGrid) {
         System.out.print("Enter your attack coordinates (e.g., A5): ");
         String input = scanner.next().toUpperCase();
-
         if (!isValidInput(input)) {
             System.out.println("Invalid input. Please try again.");
             playerTurn(opponentGrid, trackingGrid);
             return;
         }
-
         int row = input.charAt(0) - 'A';
-        int col = input.charAt(1) - '0' - 1;
-
+        int col = Integer.parseInt(input.substring(1)) - 1;
+        if (trackingGrid[row][col] == 'H' || trackingGrid[row][col] == 'M') {
+            System.out.println("You've already attacked this cell. Please choose another one.");
+            playerTurn(opponentGrid, trackingGrid);
+            return;
+        }
         if (opponentGrid[row][col] == '~') {
             System.out.println("Miss!");
             trackingGrid[row][col] = 'M';
@@ -186,7 +189,6 @@ public class BattleShip {
             Thread.currentThread().interrupt();
         }
     }
-
     /**
      * Checks if the game is over by verifying if all ships are sunk.
      *
@@ -195,7 +197,6 @@ public class BattleShip {
     static boolean isGameOver() {
         return allShipsSunk(player1Grid) || allShipsSunk(player2Grid);
     }
-
     /**
      * Checks if all ships have been destroyed on a given grid.
      *
@@ -212,7 +213,6 @@ public class BattleShip {
         }
         return true;
     }
-
     /**
      * Validates if the user input is in the correct format (e.g., A5).
      *
@@ -220,16 +220,20 @@ public class BattleShip {
      * @return true if the input is in the correct format, false otherwise.
      */
     static boolean isValidInput(String input) {
-        if (input.length() != 2) {
+        if (input.length() > 3) {
             return false;
         }
         char letter = input.charAt(0);
-        char number = input.charAt(1);
-
         if (letter < 'A' || letter >= 'A' + GRID_SIZE) {
             return false;
         }
-        if (number < '1' || number > '0' + GRID_SIZE) {
+        String number = input.substring(1);
+        try {
+            int num = Integer.parseInt(number);
+            if (num < 1 || num > GRID_SIZE) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
             return false;
         }
         return true;
